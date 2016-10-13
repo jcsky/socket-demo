@@ -1,0 +1,23 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Name:</strong>
+  <%= @chatroom.name %>
+</p>
+
+<% @chatroom.messages.each do |message| %>
+  <p>
+    <%= message.content %>
+  </p>
+<% end %>
+
+<%= form_for Message.new, url: chatroom_messages_path(@chatroom) do |f| %>
+
+  <%= f.text_field :content, class: "form-control" %>
+  <%= f.submit %>
+
+<% end %>
+
+
+<%= link_to 'Edit', edit_chatroom_path(@chatroom) %> |
+<%= link_to 'Back', chatrooms_path %>
