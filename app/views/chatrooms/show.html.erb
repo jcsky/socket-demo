@@ -1,23 +1,49 @@
 <p id="notice"><%= notice %></p>
+<div id="room" data-chatroom-id=<%=@chatroom.id%>></div>
 
 <p>
   <strong>Name:</strong>
   <%= @chatroom.name %>
 </p>
 
-<% @chatroom.messages.each do |message| %>
-  <p>
-    <%= message.content %>
-  </p>
-<% end %>
+<div id="messages">
+  <% @chatroom.messages.each do |message| %>
+    <%= render partial: "chatroom_messages/message", locals: {message: message} %>
+  <% end %>
+</div>
 
 <%= form_for Message.new, url: chatroom_messages_path(@chatroom) do |f| %>
-
+  <p>form_for submit</p>
   <%= f.text_field :content, class: "form-control" %>
   <%= f.submit %>
 
 <% end %>
 
+<div class="message_input">
+  <p>WebSocket submit</p>
+  <input type="textarea" id="content-input">
+  <button type="button" id="submit"><%= t(".send") %></button>
+</div>
+
 
 <%= link_to 'Edit', edit_chatroom_path(@chatroom) %> |
 <%= link_to 'Back', chatrooms_path %>
+
+<%= javascript_include_tag 'cable' %>
+
+<script>
+  var submit = function(msg){
+    room_id = $("#room").data('chatroom-id');
+    var data = { chatroom_id: room_id, msg: msg };
+    App.chatroom.speak( data );
+  }
+
+  $("#content-input").on("keypress", function(event){
+    if (event.keyCode == 13 ) {
+      submit(event.target.value)
+    }
+  });
+  $("#submit").on("click", function(event){
+    submit($("#content-input").val())
+  });
+</script>
