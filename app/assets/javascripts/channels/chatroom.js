@@ -12,8 +12,8 @@ App.chatroom = App.cable.subscriptions.create({
   },
 
   received: function(data) {
-    console.log("I got message~!");
-    var active_chatroom;
+    console.log("I got message: " + data.message);
+    var messages;
     messages = $("#messages");
     messages.append(data.message);
   }
